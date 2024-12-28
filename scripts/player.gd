@@ -17,6 +17,7 @@ func _physics_process(delta: float) -> void:
 	player_movement(delta)
 	enemy_attack()
 	attack()
+	current_camera()
 	if health <= 0:
 		player_alive = false
 		health = 0
@@ -134,10 +135,18 @@ func attack() -> void:
 			$AnimatedSprite2D.flip_h = true
 			$AnimatedSprite2D.play("back_attack")
 			$deal_attack_timer.start()
-		
 
 
 func _on_deal_attack_timer_timeout() -> void:
 	$deal_attack_timer.stop()
 	global.player_current_attack = false
 	attack_in_progress = false
+
+
+func current_camera():
+	if global.current_scene == "world":
+		$world_camera.enabled = true
+		$cliff_side_camera.enabled = false
+	else:
+		$world_camera.enabled = false
+		$cliff_side_camera.enabled = true

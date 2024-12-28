@@ -1,13 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://buk2gttyov74y"]
+[gd_scene load_steps=12 format=3 uid="uid://buk2gttyov74y"]
 
-[ext_resource type="Script" path="res://scripts/global.gd" id="1_2amih"]
+[ext_resource type="Script" path="res://scripts/world.gd" id="1_cvuys"]
 [ext_resource type="Texture2D" uid="uid://dxy51cindckh8" path="res://art/mystic_woods_free_2.2/sprites/tilesets/plains.png" id="1_tokb0"]
 [ext_resource type="Texture2D" uid="uid://bvv0k5pn68wa5" path="res://art/mystic_woods_free_2.2/sprites/tilesets/grass.png" id="2_3j7o6"]
 [ext_resource type="Texture2D" uid="uid://bqj8djc6bhpou" path="res://art/mystic_woods_free_2.2/sprites/objects/objects.png" id="3_75sdb"]
 [ext_resource type="PackedScene" uid="uid://d122qurn7gddj" path="res://scenes/player.tscn" id="4_sdisq"]
 [ext_resource type="PackedScene" uid="uid://5opkrp24dpt" path="res://scenes/enemy.tscn" id="5_rndaq"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ed2gu"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x1xsu"]
 texture = ExtResource("1_tokb0")
 1:0/0 = 0
 2:0/0 = 0
@@ -40,11 +40,11 @@ texture = ExtResource("1_tokb0")
 5:2/0 = 0
 4:2/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3xuoj"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rp640"]
 texture = ExtResource("2_3j7o6")
 0:0/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_hteoo"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_y0axu"]
 texture = ExtResource("3_75sdb")
 0:0/0 = 0
 0:0/0/y_sort_origin = 3
@@ -73,13 +73,16 @@ texture = ExtResource("3_75sdb")
 
 [sub_resource type="TileSet" id="TileSet_kse54"]
 physics_layer_0/collision_layer = 1
-sources/0 = SubResource("TileSetAtlasSource_ed2gu")
-sources/1 = SubResource("TileSetAtlasSource_3xuoj")
-sources/2 = SubResource("TileSetAtlasSource_hteoo")
+sources/0 = SubResource("TileSetAtlasSource_x1xsu")
+sources/1 = SubResource("TileSetAtlasSource_rp640")
+sources/2 = SubResource("TileSetAtlasSource_y0axu")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0x70b"]
+size = Vector2(48, 40)
 
 [node name="world" type="Node2D"]
 y_sort_enabled = true
-script = ExtResource("1_2amih")
+script = ExtResource("1_cvuys")
 
 [node name="TileMap" type="TileMap" parent="."]
 y_sort_enabled = true
@@ -98,3 +101,17 @@ position = Vector2(136, 120)
 
 [node name="enemy" parent="." instance=ExtResource("5_rndaq")]
 position = Vector2(301, 122)
+
+[node name="collisions" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="collisions"]
+polygon = PackedVector2Array(0, 0, 176, 0, 176, -40, 224, -40, 224, 0, 256, 0, 256, 32, 288, 32, 288, 48, 416, 48, 416, 192, 0, 192, 0, -56, -32, -56, -32, 224, 448, 224, 448, -56, 0, -56)
+
+[node name="cliff_side_transition_point" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="cliff_side_transition_point"]
+position = Vector2(200, -20)
+shape = SubResource("RectangleShape2D_0x70b")
+
+[connection signal="body_entered" from="cliff_side_transition_point" to="." method="_on_cliff_side_transition_point_body_entered"]
+[connection signal="body_exited" from="cliff_side_transition_point" to="." method="_on_cliff_side_transition_point_body_exited"]
