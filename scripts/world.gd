@@ -14,6 +14,9 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	change_scene()
+	
+	if global.found_slimes_item:
+		$chest.visible = false
 
 
 func _on_cliff_side_transition_point_body_entered(body: Node2D) -> void:

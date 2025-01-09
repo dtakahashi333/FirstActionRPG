@@ -7,6 +7,7 @@ var player_alive = true
 const speed = 100
 var cur_dir = "none"
 var attack_in_progress = false
+var in_chest_detection = false
 
 
 func _ready() -> void:
@@ -15,8 +16,19 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	player_movement(delta)
-	enemy_attack()
-	attack()
+	#enemy_attack()
+	#attack()
+	
+	if in_chest_detection:
+		if Input.is_action_just_pressed("ui_accept"):
+			global.found_slimes_item = true
+	
+	# Conversation
+	if enemy_in_attack_range:
+		if Input.is_action_just_pressed("ui_accept"):
+			DialogueManager.show_example_dialogue_balloon(load("res://dialogues/main.dialogue"), "main")
+			return
+	
 	current_camera()
 	update_health()
 	if health <= 0:
@@ -170,3 +182,13 @@ func _on_regen_timer_timeout() -> void:
 		health += 20
 		if health > 200:
 			health = 200
+
+
+func _on_chest_detection_body_entered(body: Node2D) -> void:
+	if body.has_method("player"):
+		in_chest_detection = true
+
+
+func _on_chest_detection_body_exited(body: Node2D) -> void:
+	if body.has_method("player"):
+		in_chest_detection = false

@@ -12,6 +12,9 @@ var player_start_pos_y = 108
 
 var player_first_load_in = true
 
+var found_slimes_item = false
+var given_slimes_item = false
+
 func finish_change_scenes():
 	if transition_scene:
 		transition_scene = false
